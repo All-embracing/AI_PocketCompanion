@@ -252,6 +252,23 @@ shell脚本会自动检查g++编译器和C++11支持，创建构建目录，并�
 - **ESP32-S3平台**：使用轻量级模型和ESP32特定的硬件接口
 - **x86平台**：使用完整功能的模型和模拟传感器数据
 
+## x86模拟运行说明
+
+可执行文件位于：ai_companion/build_linux/AICompanion 
+
+运行方法：./AICompanion 
+
+命令列表： 
+  help   - 显示帮助信息 
+  status - 显示系统状态 
+  location - 获取当前位置 
+  detect - 开始视觉检测 
+  stop   - 停止视觉检测 
+  chatmode 模式 - 切换聊天模式（模式: normal/普通, cultural/文化, joke/笑话/解闷, story/故事, guide/导游/伴游） 
+  setapikey 密钥 - 设置智谱AI API密钥 
+  其他输入    - 与AI伴游对话 
+  exit/quit - 退出系统
+
 ## 扩展和定制
 
 1. **添加新的文化知识**：
