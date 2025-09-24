@@ -1,8 +1,8 @@
 #include "vision/VisionProcessor.h"
-#include "vision/model_utils.h"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include "vision/model_utils.h"
 
 VisionProcessor::VisionProcessor() {
     isRunning = false;
@@ -350,7 +350,12 @@ bool VisionProcessor::loadAIModel() {
     #else
     std::string mkdirCommand = "mkdir -p " + modelsDir;
     #endif
-    system(mkdirCommand.c_str());
+    // 显式忽略system函数的返回值
+    int result = system(mkdirCommand.c_str());
+    if (result != 0) {
+        std::cerr << "创建模型目录失败: " << mkdirCommand << std::endl;
+        return false;
+    }
     
     // 使用默认的YOLOv5s模型路径
     std::string modelPath = "models/yolov5s.onnx";
@@ -496,8 +501,8 @@ void VisionProcessor::detectObjects(void* imageData) {
             
             // 收集检测结果
             for (size_t i = 0; i < classIds.size(); ++i) {
-                if (i < classIds.size() && classIds[i] < classNames.size()) {
-                    detectedObjects.push_back(classNames[classIds[i]]);
+                if (i < classIds.size() && static_cast<size_t>(classIds[i]) < classNames.size()) {
+                    detectedObjects.push_back(classNames[static_cast<size_t>(classIds[i])]);
                 }
             }
             
@@ -509,7 +514,7 @@ void VisionProcessor::detectObjects(void* imageData) {
                     
                     // 在框上方显示类别名称和置信度
                     std::string label = cv::format("%s: %.2f", 
-                        classIds[i] < classNames.size() ? classNames[classIds[i]].c_str() : "unknown", 
+                        static_cast<size_t>(classIds[i]) < classNames.size() ? classNames[static_cast<size_t>(classIds[i])].c_str() : "unknown", 
                         confidences[i]);
                     cv::putText(*frame, label, cv::Point(box.x, box.y - 10), 
                         cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 255, 0), 2);

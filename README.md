@@ -6,15 +6,53 @@
 
 ```
 AICompanion/
-├── main.cpp              # 主程序入口
-├── AICompanion.h/cpp     # 核心控制类
-├── LocationTracker.h/cpp # 位置追踪模块（GPS/IMU）
-├── VisionProcessor.h/cpp # 视觉处理模块
-├── CulturalGuide.h/cpp   # 文化讲解模块
-├── Chatbot.h/cpp         # 聊天机器人模块（解闷陪伴）
-├── SensorManager.h/cpp   # 传感器管理模块
-├── CMakeLists.txt        # CMake构建文件
-└── README.md             # 项目说明文档
+├── AI_MODEL_INTEGRATION_GUIDE.md     # AI模型集成指南
+├── CMakeLists.txt                    # CMake构建文件
+├── MODULE_DIRECTORY_DESIGN.md        # 模块目录设计文档
+├── README.build.md                   # 构建说明文档
+├── README.md                         # 项目主说明文档
+├── bin/                              # 可执行文件输出目录
+├── build/                            # 构建目录
+├── build_ubuntu.sh                   # Ubuntu平台构建脚本
+├── build_windows.bat                 # Windows平台构建脚本
+├── docs/                             # 文档目录
+│   └── YOLO_MODEL_INTEGRATION_GUIDE.md # YOLO模型集成指南
+├── examples/                         # 示例代码目录
+├── include/                          # 头文件目录
+│   ├── chat/                         # 聊天模块头文件
+│   │   └── Chatbot.h                 # 聊天机器人接口
+│   ├── core/                         # 核心模块头文件
+│   │   └── AICompanion.h             # 核心控制类接口
+│   ├── cultural/                     # 文化模块头文件
+│   │   └── CulturalGuide.h           # 文化讲解接口
+│   ├── location/                     # 位置模块头文件
+│   │   └── LocationTracker.h         # 位置追踪接口
+│   ├── sensor/                       # 传感器模块头文件
+│   │   └── SensorManager.h           # 传感器管理接口
+│   ├── utils/                        # 工具类头文件
+│   └── vision/                       # 视觉模块头文件
+│       ├── VisionProcessor.h         # 视觉处理器接口
+│       └── model_utils.h             # 模型工具函数接口
+├── models/                           # 模型文件目录
+│   └── coco.names                    # COCO数据集类别名称
+├── scripts/                          # 辅助脚本目录
+├── simple_build.bat                  # 简易构建脚本
+└── src/                              # 源代码目录
+    ├── chat/                         # 聊天模块实现
+    │   └── Chatbot.cpp               # 聊天机器人实现
+    ├── core/                         # 核心模块实现
+    │   └── AICompanion.cpp           # 核心控制类实现
+    ├── cultural/                     # 文化模块实现
+    │   └── CulturalGuide.cpp         # 文化讲解实现
+    ├── location/                     # 位置模块实现
+    │   └── LocationTracker.cpp       # 位置追踪实现
+    ├── main.cpp                      # 主程序入口
+    ├── sensor/                       # 传感器模块实现
+    │   └── SensorManager.cpp         # 传感器管理实现
+    ├── utils/                        # 工具类实现
+    └── vision/                       # 视觉模块实现
+        ├── VisionProcessor.cpp       # 视觉处理器实现
+        └── model_utils.cpp           # 模型工具函数实现
 ```
 
 ## 功能特点
