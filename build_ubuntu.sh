@@ -118,7 +118,7 @@ else
 fi
 
 # 收集所有源文件
-SOURCE_FILES=(src/main.cpp src/core/AICompanion.cpp src/location/LocationTracker.cpp src/vision/VisionProcessor.cpp src/vision/model_utils.cpp src/cultural/CulturalGuide.cpp src/chat/Chatbot.cpp src/sensor/SensorManager.cpp)
+SOURCE_FILES=(src/main.cpp src/core/AICompanion.cpp src/location/LocationTracker.cpp src/location/AmapAPI.cpp src/vision/VisionProcessor.cpp src/vision/model_utils.cpp src/cultural/CulturalGuide.cpp src/chat/Chatbot.cpp src/sensor/SensorManager.cpp)
 
 # 检查源文件是否存在
 for file in "${SOURCE_FILES[@]}"
@@ -137,7 +137,7 @@ CXXFLAGS="-std=c++11 -Wall -O2 -D_X86 -Iinclude -I../include -I/usr/include $OPE
 cd "$BUILD_DIR"
 echo -e "开始编译项目..."
 
-g++ $CXXFLAGS ../src/main.cpp ../src/core/AICompanion.cpp ../src/location/LocationTracker.cpp ../src/vision/VisionProcessor.cpp ../src/vision/model_utils.cpp ../src/cultural/CulturalGuide.cpp ../src/chat/Chatbot.cpp ../src/sensor/SensorManager.cpp -o AICompanion $OPENCV_LIBS $CURL_LIBS $JSON_LIBS
+g++ $CXXFLAGS ../src/main.cpp ../src/core/AICompanion.cpp ../src/location/LocationTracker.cpp ../src/location/AmapAPI.cpp ../src/vision/VisionProcessor.cpp ../src/vision/model_utils.cpp ../src/cultural/CulturalGuide.cpp ../src/chat/Chatbot.cpp ../src/sensor/SensorManager.cpp -o AICompanion $OPENCV_LIBS $CURL_LIBS $JSON_LIBS
 
 # 检查编译是否成功
 if [ $? -eq 0 ]
@@ -153,7 +153,17 @@ then
     echo -e "  stop   - 停止视觉检测"
     echo -e "  chatmode 模式 - 切换聊天模式（模式: normal/普通, cultural/文化, joke/笑话/解闷, story/故事, guide/导游/伴游）"
     echo -e "  setapikey 密钥 - 设置智谱AI API密钥"
+    echo -e "  setamapkey 密钥 - 设置高德地图API密钥"
+    echo -e "  exit/quit - 退出系统"
     echo -e "  其他输入    - 与AI伴游对话"
+else
+    echo -e "${RED}✗ 构建失败！${NC}"
+    exit 1
+fi
+
+# 提示用户如何运行程序
+echo -e "\n运行方法：./AICompanion"
+echo -e "\n命令列表："
     echo -e "  exit/quit - 退出系统"
 else
     echo -e "${RED}✗ 构建失败！${NC}"

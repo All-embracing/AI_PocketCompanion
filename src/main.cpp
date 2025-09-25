@@ -71,6 +71,19 @@ int main() {
             } else {
                 std::cout << "请输入有效的API密钥。用法: setapikey [your_api_key]" << std::endl;
             }
+        } else if (command.substr(0, 11) == "setamapkey ") {
+            // 设置高德地图API密钥
+            std::string apiKey = command.substr(11);
+            if (!apiKey.empty()) {
+                bool success = companion.setupAmapAPI(apiKey);
+                if (success) {
+                    std::cout << "高德地图API密钥设置成功！现在可以获取真实的地理位置信息了。" << std::endl;
+                } else {
+                    std::cout << "高德地图API密钥设置失败！" << std::endl;
+                }
+            } else {
+                std::cout << "请输入有效的API密钥。用法: setamapkey [your_api_key]" << std::endl;
+            }
         } else if (command != "") {
             companion.processUserQuery(command);
         }

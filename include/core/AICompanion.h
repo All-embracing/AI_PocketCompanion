@@ -34,6 +34,9 @@ public:
     // AI模型配置
     bool setupZhipuAIGLMAPI(const std::string& apiKey, const std::string& model = "glm-realtime");
     
+    // 地图API配置
+    bool setupAmapAPI(const std::string& apiKey);
+    
     // 辅助功能
     void showHelp();
     void showStatus();

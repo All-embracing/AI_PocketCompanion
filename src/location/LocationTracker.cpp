@@ -1,6 +1,7 @@
 #include "location/LocationTracker.h"
 #include <iostream>
 #include <cmath>
+#include "location/AmapAPI.h"
 
 LocationTracker::LocationTracker() {
     gpsAvailable = false;
@@ -159,9 +160,29 @@ void LocationTracker::fuseSensorData() {
     }
 }
 
+// 设置高德地图API密钥
+bool LocationTracker::setupAmapAPI(const std::string& apiKey) {
+    if (apiKey.empty()) {
+        std::cerr << "高德地图API密钥不能为空" << std::endl;
+        return false;
+    }
+    
+    AmapAPI::getInstance().setApiKey(apiKey);
+    std::cout << "高德地图API已配置" << std::endl;
+    return true;
+}
+
 std::string LocationTracker::reverseGeocode(double lat, double lon) {
-    // 在实际应用中，这里应该调用地理编码API
-    // 但在这个简单实现中，我们只是返回一些示例地址
+    // 首先尝试使用高德地图API进行反向地理编码
+    std::string address = AmapAPI::getInstance().reverseGeocode(lat, lon);
+    
+    // 如果API返回了有效的地址，使用它
+    if (address != "未知地址" && address != "模拟地址：未知位置") {
+        return address;
+    }
+    
+    // 如果API调用失败或没有返回有效地址，使用内置的模拟地址（作为备选方案）
+    std::cout << "使用内置模拟地址作为备选方案" << std::endl;
     
     // 基于示例位置返回地址
     if (std::abs(lat - 39.9042) < 0.01 && std::abs(lon - 116.4074) < 0.01) {

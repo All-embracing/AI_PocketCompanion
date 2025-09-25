@@ -34,6 +34,9 @@ public:
     // 获取位置变化
     float getDistanceFromLastLocation();
     
+    // 设置高德地图API密钥
+    bool setupAmapAPI(const std::string& apiKey);
+    
 private:
     // 当前位置信息
     LocationInfo currentLocation;

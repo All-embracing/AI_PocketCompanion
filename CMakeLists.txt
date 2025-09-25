@@ -59,7 +59,17 @@ endif()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # 添加源文件
-file(GLOB_RECURSE SOURCES "src/*.cpp")
+set(SOURCES
+    src/main.cpp
+    src/core/AICompanion.cpp
+    src/location/LocationTracker.cpp
+    src/location/AmapAPI.cpp
+    src/vision/VisionProcessor.cpp
+    src/vision/model_utils.cpp
+    src/chat/Chatbot.cpp
+    src/cultural/CulturalGuide.cpp
+    src/sensor/SensorManager.cpp
+)
 
 # 创建可执行文件
 add_executable(AICompanion ${SOURCES})

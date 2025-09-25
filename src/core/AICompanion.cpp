@@ -161,6 +161,12 @@ bool AICompanion::setupZhipuAIGLMAPI(const std::string& apiKey, const std::strin
     return chatbot->setupZhipuAIGLMAPI(apiKey, model);
 }
 
+bool AICompanion::setupAmapAPI(const std::string& apiKey) {
+    if (!isInitialized || locationTracker == nullptr) return false;
+    
+    return locationTracker->setupAmapAPI(apiKey);
+}
+
 void AICompanion::showHelp() {
     std::cout << "可用命令:\n";
     std::cout << "  help        - 显示帮助信息\n";
@@ -170,8 +176,9 @@ void AICompanion::showHelp() {
     std::cout << "  stop        - 停止视觉检测\n";
     std::cout << "  chatmode 模式 - 切换聊天模式（模式: normal/普通, cultural/文化, joke/笑话/解闷, story/故事, guide/导游/伴游）\n";
     std::cout << "  setapikey 密钥 - 设置智谱AI API密钥\n";
-    std::cout << "  其他输入    - 与AI伴游对话\n";
+    std::cout << "  setamapkey 密钥 - 设置高德地图API密钥\n";
     std::cout << "  exit/quit   - 退出系统\n";
+    std::cout << "  其他输入    - 与AI伴游对话\n";
 }
 
 void AICompanion::showStatus() {
