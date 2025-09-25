@@ -208,6 +208,22 @@ bool VisionProcessor::loadYOLOModel(const std::string& modelPath) {
 #endif
 }
 
+// 重置视觉处理系统
+void VisionProcessor::reset() {
+    // 停止检测
+    if (isRunning) {
+        stop();
+    }
+    
+    // 清空检测结果
+    detectedObjects.clear();
+    
+    // 重置为默认灵敏度
+    detectionSensitivity = 0.7f;
+    
+    std::cout << "视觉处理系统已重置" << std::endl;
+}
+
 void VisionProcessor::update() {
     if (!isRunning || !cameraAvailable) {
         return;

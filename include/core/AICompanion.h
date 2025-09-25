@@ -26,6 +26,8 @@ public:
     void getCurrentLocation();
     void startDetection();
     void stopDetection();
+    void interruptScenicSpotExplanation();
+    void reset();
     void processUserQuery(const std::string& query);
     
     // 聊天模式控制
@@ -53,9 +55,20 @@ private:
     bool isInitialized;
     bool isDetecting;
     
+    // 景区讲解状态
+    bool isScenicSpotExplaining;
+    std::string currentScenicSpot;
+    
     // 设备兼容性检测
     bool detectDeviceType();
     bool setupHardware();
+    
+    // 私有方法
+    void updateSensorData();
+    void updateLocation();
+    void updateVisionDetection();
+    void checkScenicSpotEntry();
+    void startScenicSpotExplanation();
 };
 
 #endif // AI_COMPANION_H

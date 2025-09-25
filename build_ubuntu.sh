@@ -162,10 +162,3 @@ else
 fi
 
 # 提示用户如何运行程序
-echo -e "\n运行方法：./AICompanion"
-echo -e "\n命令列表："
-    echo -e "  exit/quit - 退出系统"
-else
-    echo -e "${RED}✗ 构建失败！${NC}"
-    exit 1
-fi

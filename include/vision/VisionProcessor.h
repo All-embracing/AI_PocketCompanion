@@ -47,6 +47,9 @@ public:
     // 加载YOLO模型（新增方法）
     bool loadYOLOModel(const std::string& modelPath);
     
+    // 重置视觉处理系统
+    void reset();
+    
 private:
     // 系统状态
     bool isRunning;

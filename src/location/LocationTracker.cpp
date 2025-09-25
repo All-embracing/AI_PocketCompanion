@@ -18,6 +18,13 @@ LocationTracker::LocationTracker() {
     
     // 复制给上一次位置
     lastLocation = currentLocation;
+    
+    // 初始化电子围栏相关
+    currentScenicSpot = "";
+    lastScenicSpot = "";
+    
+    // 初始化景区电子围栏
+    initializeScenicSpotFences();
 }
 
 LocationTracker::~LocationTracker() {
@@ -40,7 +47,99 @@ bool LocationTracker::initialize() {
     return true;
 }
 
+// 初始化景区电子围栏
+void LocationTracker::initializeScenicSpotFences() {
+    // 添加一些示例景区的电子围栏
+    ScenicSpotFence fence;
+    
+    // 故宫博物院
+    fence.scenicSpotName = "故宫博物院";
+    fence.centerLatitude = 39.9042;
+    fence.centerLongitude = 116.4074;
+    fence.radius = 500.0; // 500米半径
+    scenicSpotFences.push_back(fence);
+    
+    // 天坛公园
+    fence.scenicSpotName = "天坛公园";
+    fence.centerLatitude = 39.9139;
+    fence.centerLongitude = 116.3912;
+    fence.radius = 800.0; // 800米半径
+    scenicSpotFences.push_back(fence);
+    
+    // 兵马俑博物馆
+    fence.scenicSpotName = "兵马俑博物馆";
+    fence.centerLatitude = 34.2657;
+    fence.centerLongitude = 108.9542;
+    fence.radius = 1000.0; // 1000米半径
+    scenicSpotFences.push_back(fence);
+    
+    // 杭州西湖
+    fence.scenicSpotName = "杭州西湖";
+    fence.centerLatitude = 30.2741;
+    fence.centerLongitude = 120.1551;
+    fence.radius = 2000.0; // 2000米半径
+    scenicSpotFences.push_back(fence);
+    
+    // 深圳世界之窗
+    fence.scenicSpotName = "深圳世界之窗";
+    fence.centerLatitude = 22.5431;
+    fence.centerLongitude = 114.0579;
+    fence.radius = 800.0; // 800米半径
+    scenicSpotFences.push_back(fence);
+}
+
+// 重置位置追踪系统
+void LocationTracker::reset() {
+    // 重置位置信息
+    currentLocation.latitude = 0.0;
+    currentLocation.longitude = 0.0;
+    currentLocation.altitude = 0.0;
+    currentLocation.accuracy = 0.0;
+    currentLocation.address = "未知地址";
+    currentLocation.locationName = "未知位置";
+    currentLocation.isValid = false;
+    
+    // 复制给上一次位置
+    lastLocation = currentLocation;
+    
+    // 重置电子围栏相关状态
+    currentScenicSpot = "";
+    lastScenicSpot = "";
+    
+    std::cout << "位置追踪系统已重置" << std::endl;
+}
+
+// 计算两个经纬度之间的距离（米）
+float LocationTracker::calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const float R = 6371000.0f; // 地球半径（米）
+    
+    float radLat1 = static_cast<float>(lat1 * M_PI / 180.0);
+    float radLon1 = static_cast<float>(lon1 * M_PI / 180.0);
+    float radLat2 = static_cast<float>(lat2 * M_PI / 180.0);
+    float radLon2 = static_cast<float>(lon2 * M_PI / 180.0);
+    
+    float dlat = radLat2 - radLat1;
+    float dlon = radLon2 - radLon1;
+    
+    float a = std::sin(dlat / 2) * std::sin(dlat / 2) +
+              std::cos(radLat1) * std::cos(radLat2) *
+              std::sin(dlon / 2) * std::sin(dlon / 2);
+    
+    float c = 2 * std::atan2(std::sqrt(a), std::sqrt(1 - a));
+    
+    return R * c;
+}
+
+// 检查点是否在电子围栏内
+bool LocationTracker::isPointInFence(double lat, double lon, const ScenicSpotFence& fence) {
+    float distance = calculateDistance(lat, lon, fence.centerLatitude, fence.centerLongitude);
+    return distance <= fence.radius;
+}
+
 void LocationTracker::update() {
+    // 保存当前景区作为上一次景区
+    lastScenicSpot = currentScenicSpot;
+    
     // 模拟位置更新
     static int count = 0;
     count++;
@@ -83,7 +182,45 @@ void LocationTracker::update() {
         
         // 保存为上一次位置
         lastLocation = currentLocation;
+        
+        // 检查用户是否进入景区
+        checkScenicSpotEntry();
     }
+}
+
+// 检查用户是否进入景区
+void LocationTracker::checkScenicSpotEntry() {
+    if (!currentLocation.isValid) {
+        currentScenicSpot = "";
+        return;
+    }
+    
+    // 重置当前景区
+    currentScenicSpot = "";
+    
+    // 检查用户是否在任何景区电子围栏内
+    for (const auto& fence : scenicSpotFences) {
+        if (isPointInFence(currentLocation.latitude, currentLocation.longitude, fence)) {
+            currentScenicSpot = fence.scenicSpotName;
+            break; // 找到一个匹配的景区就可以了
+        }
+    }
+}
+
+// 获取当前所在景区
+std::string LocationTracker::getCurrentScenicSpot() {
+    return currentScenicSpot;
+}
+
+// 检查用户是否进入新景区
+bool LocationTracker::hasEnteredNewScenicSpot() {
+    // 如果当前在景区，且上一次不在同一景区，则表示进入了新景区
+    return !currentScenicSpot.empty() && (currentScenicSpot != lastScenicSpot);
+}
+
+// 获取上一次所在景区
+std::string LocationTracker::getLastScenicSpot() {
+    return lastScenicSpot;
 }
 
 LocationInfo LocationTracker::getCurrentLocation() {

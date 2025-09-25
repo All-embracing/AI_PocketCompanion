@@ -9,6 +9,10 @@ AICompanion::AICompanion() {
     sensorManager = nullptr;
     isInitialized = false;
     isDetecting = false;
+    
+    // 景区讲解状态
+    isScenicSpotExplaining = false;
+    currentScenicSpot = "";
 }
 
 AICompanion::~AICompanion() {
@@ -100,6 +104,9 @@ void AICompanion::update() {
     // 更新位置信息
     locationTracker->update();
     
+    // 检查是否进入新景区并开始讲解
+    checkScenicSpotEntry();
+    
     // 如果正在检测，更新视觉处理
     if (isDetecting) {
         visionProcessor->update();
@@ -114,6 +121,82 @@ void AICompanion::update() {
                 std::cout << "文化讲解: " << explanation << std::endl;
             }
         }
+    }
+}
+
+// 检查是否进入新景区并开始讲解
+void AICompanion::checkScenicSpotEntry() {
+    if (locationTracker->hasEnteredNewScenicSpot()) {
+        std::string newScenicSpot = locationTracker->getCurrentScenicSpot();
+        
+        std::cout << "欢迎来到" << newScenicSpot << "！" << std::endl;
+        
+        // 获取并显示景区介绍
+        std::vector<CulturalInfo> scenicSpotInfo = culturalGuide->getLocationInfo(newScenicSpot);
+        if (!scenicSpotInfo.empty()) {
+            std::cout << "景区介绍：" << std::endl;
+            for (const auto& info : scenicSpotInfo) {
+                if (!info.title.empty()) {
+                    std::cout << "- " << info.title << "：" << info.description << std::endl;
+                }
+            }
+        } else {
+            std::cout << "正在为您介绍" << newScenicSpot << "的相关文化知识..." << std::endl;
+        }
+        
+        // 设置当前景区
+        currentScenicSpot = newScenicSpot;
+        
+        // 标记正在进行景区讲解
+        isScenicSpotExplaining = true;
+        
+        // 自动开始景区文化讲解
+        startScenicSpotExplanation();
+    }
+}
+
+// 开始景区文化讲解
+void AICompanion::startScenicSpotExplanation() {
+    // 这里是一个简化的实现
+    // 在实际应用中，这里可能会触发更复杂的讲解流程
+    std::cout << "现在为您提供" << currentScenicSpot << "的文化讲解。" << std::endl;
+    
+    // 示例：获取景区相关的文化信息
+    std::vector<CulturalInfo> locationInfo = culturalGuide->getLocationInfo(currentScenicSpot);
+    if (!locationInfo.empty()) {
+        for (const auto& info : locationInfo) {
+            if (!info.title.empty()) {
+                std::cout << "【" << info.title << "】" << std::endl;
+                if (!info.description.empty()) {
+                    std::cout << info.description << std::endl;
+                }
+                if (!info.history.empty()) {
+                    std::cout << "历史背景：" << info.history << std::endl;
+                }
+                if (!info.significance.empty()) {
+                    std::cout << "文化意义：" << info.significance << std::endl;
+                }
+                std::cout << std::endl;
+            }
+        }
+    } else {
+        // 如果没有找到特定的景区信息，使用通用讲解
+        std::string explanation = culturalGuide->getExplanation(currentScenicSpot);
+        if (!explanation.empty()) {
+            std::cout << explanation << std::endl;
+        } else {
+            std::cout << "这是一个历史悠久的景区，有着丰富的文化底蕴和历史故事。" << std::endl;
+        }
+    }
+    
+    std::cout << "您可以随时提出问题或请求新的讲解内容，我会为您提供帮助。" << std::endl;
+}
+
+// 中断当前的景区讲解
+void AICompanion::interruptScenicSpotExplanation() {
+    if (isScenicSpotExplaining) {
+        isScenicSpotExplaining = false;
+        std::cout << "景区讲解已暂停。" << std::endl;
     }
 }
 
@@ -142,8 +225,32 @@ void AICompanion::stopDetection() {
     std::cout << "停止视觉检测和识别..." << std::endl;
 }
 
+// 重置系统
+void AICompanion::reset() {
+    if (!isInitialized) return;
+    
+    // 重置各子系统
+    // if (locationTracker) locationTracker->reset();
+    // if (visionProcessor) visionProcessor->reset();
+    
+    // 重置检测状态
+    if (isDetecting) {
+        stopDetection();
+    }
+    
+    // 重置景区讲解状态
+    isScenicSpotExplaining = false;
+    currentScenicSpot = "";
+}
+
 void AICompanion::processUserQuery(const std::string& query) {
     if (!isInitialized) return;
+    
+    // 如果正在进行景区讲解，用户的新请求会打断当前讲解
+    if (isScenicSpotExplaining) {
+        interruptScenicSpotExplanation();
+        std::cout << std::endl;
+    }
     
     std::string response = chatbot->generateResponse(query);
     std::cout << "AI伴游: " << response << std::endl;
